@@ -1,4 +1,4 @@
-package com.trueconf.circleview;
+package com.trueconf.circleview.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
