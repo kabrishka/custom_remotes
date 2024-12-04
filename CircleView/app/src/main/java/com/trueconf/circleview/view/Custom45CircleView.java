@@ -15,20 +15,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.BlendModeColorFilterCompat;
-import androidx.core.graphics.BlendModeCompat;
 
 import com.trueconf.circleview.R;
 import com.trueconf.circleview.utils.GuiHelper;
 
 public class Custom45CircleView extends View {
-
-    private static final int BACKGROUND_COLOR = Color.parseColor("#292929");
     private static final int STROKE_COLOR = 0xDEFFFFFF; // 87%
     private static final int INNER_STROKE_COLOR = 0x61FFFFFF; // 38%
-    private static final int SELECTED_COLOR = 0x3DFFFFFF; // 24%
-    private static final int ICON_COLOR = 0x8AFFFFFF; // 54%
-    private static final int SELECTED_COLOR_WITHOUT_TRANSPARENT = Color.parseColor("#565656");
 
     private Paint paint;
     private Bitmap icReset, icArrow;
@@ -79,12 +72,12 @@ public class Custom45CircleView extends View {
         super.onDraw(canvas);
 
         // Рисуем закрашенную внешнюю окружность
-        drawFilledCircle(BACKGROUND_COLOR, canvas, radius);
+        drawFilledCircle(canvas, radius);
         // Рисуем границы внешней окружности
         drawCircleBound(STROKE_COLOR, canvas, radius);
         drawCircleButtons(canvas);
         // Рисуем закрашенную внутреннюю окружность
-        drawFilledCircle(getSectorColor(), canvas, innerRadius);
+        drawFilledCircle(canvas, innerRadius);
         // Рисуем изображение
         drawResetImage(canvas);
         // Рисуем границы внутренней окружности
@@ -109,20 +102,12 @@ public class Custom45CircleView extends View {
         arrowIndent = GuiHelper.convertDpToPx(getResources(), 8f); // 8dp
 
         // Загружаем изображение из ресурсов
-        icReset = getBitmapFromDrawable(getDrawableFromRes(R.drawable.ic_reset_ptz));
+        icReset = getBitmapFromDrawable(getDrawableFromRes(R.drawable.ic_reset));
         icArrow = getBitmapFromDrawable(getDrawableFromRes(R.drawable.ic_arrow));
     }
 
     private Drawable getDrawableFromRes(int resId) {
-        Drawable drawable = ContextCompat.getDrawable(getContext(), resId);
-
-        if (drawable != null) {
-            drawable.setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                    ICON_COLOR,
-                    BlendModeCompat.SRC_IN
-            ));
-        }
-        return drawable;
+        return ContextCompat.getDrawable(getContext(), resId);
     }
 
     private Bitmap getBitmapFromDrawable(Drawable drawable) {
@@ -150,14 +135,10 @@ public class Custom45CircleView extends View {
         }
     }
 
-    private void drawFilledCircle(int colorId, Canvas canvas, float radius) {
+    private void drawFilledCircle(Canvas canvas, float radius) {
         paint.setStyle(Paint.Style.FILL);
-        paint.setColor(colorId);
+        paint.setColor(selectedSector == Sector.RESET ? Color.LTGRAY : GuiHelper.getSectorColor(Sector.RESET));
         canvas.drawCircle(centerX, centerY, radius, paint);
-    }
-
-    private int getSectorColor() {
-        return selectedSector == Sector.RESET ? SELECTED_COLOR_WITHOUT_TRANSPARENT : BACKGROUND_COLOR;
     }
 
     private void drawCircleBound(int INNER_STROKE_COLOR, Canvas canvas, float radius) {
@@ -184,20 +165,18 @@ public class Custom45CircleView extends View {
     }
 
     private void drawSelectedSector(Canvas canvas, int i) {
-        if (i == selectedSector.ToInt()) {
-            paint.setStyle(Paint.Style.FILL);
-            paint.setColor(SELECTED_COLOR);
-            canvas.drawArc(
-                    centerX - radius,
-                    centerY - radius,
-                    centerX + radius,
-                    centerY + radius,
-                    startAngle + i * sweepAngle,  // начальный угол
-                    sweepAngle, // на сколько градусов хотим нарисовать
-                    true,
-                    paint
-            );
-        }
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(i == selectedSector.ToInt() ? Color.LTGRAY : GuiHelper.getSectorColor(Sector.FromInt(i)));
+        canvas.drawArc(
+                centerX - radius,
+                centerY - radius,
+                centerX + radius,
+                centerY + radius,
+                startAngle + i * sweepAngle,  // начальный угол
+                sweepAngle, // на сколько градусов хотим нарисовать
+                true,
+                paint
+        );
     }
 
     private void drawResetImage(Canvas canvas) {

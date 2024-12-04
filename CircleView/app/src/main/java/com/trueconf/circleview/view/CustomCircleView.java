@@ -9,6 +9,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import com.trueconf.circleview.utils.GuiHelper;
+
 public class CustomCircleView extends View {
 
     private Paint paint;
@@ -49,7 +51,7 @@ public class CustomCircleView extends View {
 
         // Рисуем сектора
         for (int i = 0; i < 4; i++) {
-            paint.setColor(getSectorColor(i));
+            paint.setColor(GuiHelper.getSectorColor(Sector.FromInt(i)));
             canvas.drawArc(rectF, i * 90, 90, true, paint);
         }
     }
@@ -71,21 +73,5 @@ public class CustomCircleView extends View {
             return true;
         }
         return super.onTouchEvent(event);
-    }
-
-    // Метод для получения цвета сектора
-    private int getSectorColor(int sector) {
-        switch (sector) {
-            case 1:
-                return 0xFF00FF00; // Зеленый
-            case 2:
-                return 0xFFFF0000; // Красный
-            case 3:
-                return 0xFF0000FF; // Синий
-            case 4:
-                return 0xFFFFFF00; // Жёлтый
-            default:
-                return 0xFFFFFFFF; // Белый
-        }
     }
 }

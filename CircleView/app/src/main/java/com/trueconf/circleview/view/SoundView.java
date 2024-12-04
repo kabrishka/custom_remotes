@@ -15,18 +15,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.BlendModeColorFilterCompat;
-import androidx.core.graphics.BlendModeCompat;
 
 import com.trueconf.circleview.R;
 import com.trueconf.circleview.utils.GuiHelper;
 
 public class SoundView extends View {
 
-    private static final int BACKGROUND_COLOR = Color.parseColor("#292929");
     private static final int STROKE_COLOR = 0xDEFFFFFF; // 87%
-    private static final int SELECTED_COLOR = Color.parseColor("#565656");
-    private static final int ICON_COLOR = 0x8AFFFFFF; // 54%
     float width, height, radius;
     float left = 0f;
     float top = 0f;
@@ -63,15 +58,7 @@ public class SoundView extends View {
     }
 
     private Drawable getDrawableFromRes(int resId) {
-        Drawable drawable = ContextCompat.getDrawable(getContext(), resId);
-
-        if (drawable != null) {
-            drawable.setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                    ICON_COLOR,
-                    BlendModeCompat.SRC_IN
-            ));
-        }
-        return drawable;
+        return ContextCompat.getDrawable(getContext(), resId);
     }
 
     private Bitmap getBitmapFromDrawable(Drawable drawable) {
@@ -118,13 +105,12 @@ public class SoundView extends View {
     }
 
     private void drawOuterRect(@NonNull Canvas canvas, float left, float padding, float top, float width, float height, float radius) {
-        paint.setColor(BACKGROUND_COLOR);
         canvas.drawRoundRect(left + padding, top + padding, width - padding, height - padding, radius, radius, paint);
         canvas.drawLine(left + padding, height / 2, width - padding, height / 2, paint);
     }
 
     private void drawTopBtn(@NonNull Canvas canvas, float left, float padding, float width, float height, float radius) {
-        paint.setColor(selectedSector == Sector.TOP ? SELECTED_COLOR : BACKGROUND_COLOR);
+        paint.setColor(selectedSector == Sector.TOP ? Color.LTGRAY : GuiHelper.getSectorColor(Sector.TOP));
         // Верхняя часть со скругленными углами
         canvas.drawRoundRect(left + padding, 0f, width - padding, height / 2, radius, radius, paint);
         // Нижняя часть, частично поверх верхней
@@ -132,7 +118,7 @@ public class SoundView extends View {
     }
 
     private void drawBottomBtn(@NonNull Canvas canvas, float left, float padding, float height, float width, float radius) {
-        paint.setColor(selectedSector == Sector.BOTTOM ? SELECTED_COLOR : BACKGROUND_COLOR);
+        paint.setColor(selectedSector == Sector.BOTTOM ? Color.LTGRAY : GuiHelper.getSectorColor(Sector.BOTTOM));
         // Верхняя часть со скругленными углами
         canvas.drawRoundRect(left + padding, height / 2, width - padding, height - padding, radius, radius, paint);
         // Нижняя часть, частично поверх верхней
